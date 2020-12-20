@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "rootDir": "src/app",
+        "outDir": "src/js",
+        "module": "commonjs"
+    },
+    "lib": [
+        "es2016",
+        "dom"
+        ]
+}
