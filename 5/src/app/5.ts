@@ -2,13 +2,8 @@ import * as fs from 'fs';
 import { promisify } from 'util';
 
 function binaryStep(step:number, input:string, tuple:number[]) {
-    switch (input) {
-        case 'B': return [tuple[0] + step, tuple[1]];
-        case 'R': return [tuple[0] + step, tuple[1]];
-        case 'F': return [tuple[0], tuple[1] - step];
-        case 'L': return [tuple[0], tuple[1] - step];
-        default: return null;
-    }
+    if (input == '1') return [tuple[0] + step, tuple[1]];
+    else if (input == '0') return [tuple[0], tuple[1] - step];
 }
 
 // Your seat wasn't at the very front or back, though; the seats with IDs +1 and -1 from yours will be in your list.
@@ -34,18 +29,19 @@ const run = async(input:string) => {
         let smallestSeatId = Number.MAX_SAFE_INTEGER;
         let seatIds = new Set<number>();
         lines.forEach(boardingPass => {
+            let binaryBoardingPass = boardingPass.replace(/[FL]/g, '0').replace(/[BR]/g, '1')
             let row = [0, 128];
             let step = 128;
             for (let i = 0; i < 7; i++) {
                 step = +step/2;
-                row = binaryStep(step, boardingPass[i], row);
+                row = binaryStep(step, binaryBoardingPass[i], row);
             };
 
             let column = [0, 8];
             step = 8;
             for (let i = 7; i < boardingPass.length; i++) {
                 step = step/2;
-                column = binaryStep(step, boardingPass[i], column);
+                column = binaryStep(step, binaryBoardingPass[i], column);
             }
 
             let seatId = row[0] * 8 + column[0];
