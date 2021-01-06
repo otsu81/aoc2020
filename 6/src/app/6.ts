@@ -15,28 +15,28 @@ function countYesesPart1(answers:string): number {
     return responses.size;
 }
 
+// only characters in the first form can be valid; if not present in first form they can't be present in all
 function countYesesPart2(answers:string): number {
     let forms = answers.split('\n');
     // check if there's only one form, if there is all answers are valid
     if (forms.length == 1) return countYesesPart1(answers);
-    // keep track of positives
-    let positives = new Set<string>();
-    // keep track of negatives so we don't need to check unnecessary letters
-    let negatives = new Set<string>();
 
-    // for each form
-    for (let i = 0; i < forms.length; i++) {
-        // for each letter
-        for (let j = 0; j < forms[i].length; j++) {
-            // for each next form
-                // if letter in form
-                // check next form
-                // if end add to positives
-                // else add to negative, break
+    // make set of negatives and remove as they become positive
+    let negatives = new Set('abcdefghijklmnopqrstuvwxyz'.split(''));
+    let alphabetSize = negatives.size;
 
+    // for each letter in first form
+    for (let i = 0; i < forms[0].length; i++) {
+        let flag = true;
+        let formIndex = 0;
+        while (flag && formIndex < forms.length - 1) {
+            formIndex++;
+            flag = forms[formIndex].includes(forms[0][i]);
         }
+        if (flag) negatives.delete(forms[0][i]);
     }
-    return 0;
+
+    return alphabetSize - negatives.size;
 }
 
 const run = async(input:string) => {
@@ -45,14 +45,15 @@ const run = async(input:string) => {
         // split groups
         let groups = file.split('\n\n');
 
-        // count one group's responses at a time
-        let yesses = 0;
+        let yessesPart1 = 0;
+        let yessesPart2 = 0;
         groups.forEach(group => {
-            // yesses += countYesesPart1(group);
-            console.log(countYesesPart2(group));
+            yessesPart1 += countYesesPart1(group);
+            yessesPart2 += countYesesPart2(group);
         })
-        // console.log(yesses)
+        console.log('Part1:', yessesPart1);
+        console.log('Part2:', yessesPart2);
     });
 };
 
-run('input/testInput2.txt');
+run('input/input.txt');
